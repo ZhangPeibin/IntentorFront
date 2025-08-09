@@ -1,5 +1,5 @@
 {
-  "name": "se-2",
+  "name": "intentor",
   "version": "0.0.1",
   "private": true,
   "workspaces": {
@@ -35,19 +35,19 @@
     "hardhat:test": "yarn workspace @se-2/hardhat test",
     "hardhat:verify": "yarn workspace @se-2/hardhat verify",
     "lint": "yarn next:lint && yarn hardhat:lint",
-    "next:build": "yarn workspace @se-2/nextjs build",
-    "next:check-types": "yarn workspace @se-2/nextjs check-types",
-    "next:format": "yarn workspace @se-2/nextjs format",
-    "next:lint": "yarn workspace @se-2/nextjs lint",
-    "next:serve": "yarn workspace @se-2/nextjs serve",
+    "next:build": "yarn workspace  @intentor/dapp build",
+    "next:check-types": "yarn workspace  @intentor/dapp check-types",
+    "next:format": "yarn workspace  @intentor/dapp format",
+    "next:lint": "yarn workspace  @intentor/dapp lint",
+    "next:serve": "yarn workspace  @intentor/dapp serve",
     "postinstall": "husky",
     "precommit": "lint-staged",
-    "start": "yarn workspace @se-2/nextjs dev",
+    "start": "yarn workspace  @intentor/dapp dev",
     "test": "yarn hardhat:test",
-    "vercel": "yarn workspace @se-2/nextjs vercel",
-    "vercel:yolo": "yarn workspace @se-2/nextjs vercel:yolo",
-    "ipfs": "yarn workspace @se-2/nextjs ipfs",
-    "vercel:login": "yarn workspace @se-2/nextjs vercel:login",
+    "vercel": "yarn workspace  @intentor/dapp vercel",
+    "vercel:yolo": "yarn workspace  @intentor/dapp vercel:yolo",
+    "ipfs": "yarn workspace  @intentor/dapp ipfs",
+    "vercel:login": "yarn workspace  @intentor/dapp vercel:login",
     "verify": "yarn hardhat:verify"
   },
   "packageManager": "yarn@3.2.3",
@@ -57,5 +57,9 @@
   },
   "engines": {
     "node": ">=20.18.3"
+  },
+  "dependencies": {
+    "@okx-dex/okx-dex-sdk": "^1.0.16",
+    "axios": "^1.11.0"
   }
 }

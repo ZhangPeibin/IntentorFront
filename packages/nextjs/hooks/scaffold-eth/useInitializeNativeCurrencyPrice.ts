@@ -11,11 +11,13 @@ const enablePolling = false;
  * Get the price of Native Currency based on Native Token/DAI trading pair from Uniswap SDK
  */
 export const useInitializeNativeCurrencyPrice = () => {
+  console.log("useInitializeNativeCurrencyPrice - Initializing native currency price...");
   const setNativeCurrencyPrice = useGlobalState(state => state.setNativeCurrencyPrice);
   const setIsNativeCurrencyFetching = useGlobalState(state => state.setIsNativeCurrencyFetching);
   const { targetNetwork } = useTargetNetwork();
 
   const fetchPrice = useCallback(async () => {
+    console.log("useInitializeNativeCurrencyPrice - Fetching native currency price...");
     setIsNativeCurrencyFetching(true);
     const price = await fetchPriceFromUniswap(targetNetwork);
     setNativeCurrencyPrice(price);

@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@font-face {
+    font-family: 'IBM Plex Sans', monospace; 
+    src: url(/assets/font/IBMPlexSans-VariableFont_wdth,wght.ttf);
+}
+
+
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
 @theme {
@@ -88,6 +94,7 @@
 
   body {
     min-height: 100vh;
+    font-family:'IBM Plex Sans'
   }
 
   h1,

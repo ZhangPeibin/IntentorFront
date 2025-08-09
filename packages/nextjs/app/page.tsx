@@ -1,67 +1,117 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
 import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Address } from "~~/components/scaffold-eth";
+import { intentRequest } from "~~/services/lib/verify";
+import { execute } from "~~/utils/quoter";
+import { validateIntent } from "~~/utils/validate";
 
 const Home: NextPage = () => {
-  const { address: connectedAddress } = useAccount();
+  const { address, chainId } = useAccount();
+  const [input, setInput] = useState("");
+  const [intent, setIntent] = useState<any | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState("");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function fetchQuote() {
+      if (!intent) return;
+      if (!intent || !intent.fromToken.length || !intent.toToken) {
+        console.error("❌ Invalid intent:", intent);
+        return;
+      }
+
+      try {
+        await execute(intent, setStep, setError);
+      } catch (error) {
+        console.error("❌:", error);
+      }
+    }
+
+    fetchQuote();
+  }, [intent]);
+
+  const handleIntent = async () => {
+    if (!input.trim() || !address || !chainId) return;
+
+    setLoading(true);
+    setIntent(null);
+
+    try {
+      const data = await intentRequest(
+        {
+          message: input.trim(),
+          wallet: address,
+        },
+        chainId,
+      );
+      console.log("Intent data:", data);
+      if (validateIntent(data)) {
+        setIntent(data);
+      } else {
+        setError("❌Analyze intent failed");
+      }
+    } catch (err: any) {
+      setError("❌ Analyze intent failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      setStep("Analyze intent");
+      setError("");
+      handleIntent();
+    }
+  };
+
+  const showTips = () => {
+    const stepExist = step.length !== 0;
+    const errorExist = error.length !== 0;
+    return stepExist || errorExist;
+  };
 
   return (
     <>
       <div className="flex items-center flex-col grow pt-10">
-        <div className="px-5">
-          <h1 className="text-center">
-            <span className="block text-2xl mb-2">Welcome to</span>
-            <span className="block text-4xl font-bold">Scaffold-ETH 2</span>
-          </h1>
-          <div className="flex justify-center items-center space-x-2 flex-col">
-            <p className="my-2 font-medium">Connected Address:</p>
-            <Address address={connectedAddress} />
-          </div>
-          <p className="text-center text-lg">
-            Get started by editing{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/nextjs/app/page.tsx
-            </code>
-          </p>
-          <p className="text-center text-lg">
-            Edit your smart contract{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              YourContract.sol
-            </code>{" "}
-            in{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/hardhat/contracts
-            </code>
-          </p>
-        </div>
+        <div className="px-5 pt-20">
+          <div>
+            <fieldset className="fieldset w-full">
+              <legend className="fieldset-legend"> What's your intent? </legend>
+              <input
+                type="text"
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className=" w-full input "
+                placeholder="Type here"
+              />
+            </fieldset>
+            <div
+              className={`flex items-center text-sm transition-opacity duration-300 ${
+                showTips() ? "opacity-100" : "opacity-0 pointer-events-none"
+              }`}
+            >
+              {"-> "}
+              <span className={`ml-2 mr-2 ${error.length !== 0 ? "text-red-600 font-semibold" : ""}`}>
+                {error.length === 0 ? step : error}
+              </span>
 
-        <div className="grow bg-base-300 w-full mt-16 px-8 py-12">
-          <div className="flex justify-center items-center gap-12 flex-col md:flex-row">
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
-              <BugAntIcon className="h-8 w-8 fill-secondary" />
-              <p>
-                Tinker with your smart contract using the{" "}
-                <Link href="/debug" passHref className="link">
-                  Debug Contracts
-                </Link>{" "}
-                tab.
-              </p>
-            </div>
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
-              <MagnifyingGlassIcon className="h-8 w-8 fill-secondary" />
-              <p>
-                Explore your local transactions with the{" "}
-                <Link href="/blockexplorer" passHref className="link">
-                  Block Explorer
-                </Link>{" "}
-                tab.
-              </p>
+              {error.length == 0 && step.length > 0 && (
+                <progress className="progress" style={{ width: "70%" }}></progress>
+              )}
             </div>
           </div>
+
+          <p className="text-center text-lg">The universal executor of on-chain intent.</p>
+          <p className="text-center text-lg">Swap, transfer, stake, claim, and more — all triggered by what you say.</p>
         </div>
       </div>
     </>
