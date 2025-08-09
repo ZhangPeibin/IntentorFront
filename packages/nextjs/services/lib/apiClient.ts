@@ -6,7 +6,7 @@ import { useAuthStore } from "~~/store/useAuthStore";
 dotenv.config();
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:6000",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://207.148.8.209:3000",
   timeout: 60000,
 });
 
