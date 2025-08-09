@@ -7,19 +7,19 @@ export type IntentInfo = {
 };
 
 export async function getSignInfo(address: string, chainId: number) {
-  const res = await apiClient.get("/api/verify/signInfo", {
+  const res = await apiClient.get("/verify/signInfo", {
     params: { address, chainId },
   });
   return res.data;
 }
 
 export async function verifySignature(message: string, signature: string, address: string, chainId: number) {
-  const res = await apiClient.post("/api/verify", { message, signature, address, chainId });
+  const res = await apiClient.post("/verify", { message, signature, address, chainId });
   return res.data; // { token }
 }
 
 export async function intentRequest(intent: IntentInfo, chainId: number) {
-  const res = await apiClient.post("/api/intent", {
+  const res = await apiClient.post("/intent", {
     ...intent,
     address: intent.wallet,
     chainId: chainId,
