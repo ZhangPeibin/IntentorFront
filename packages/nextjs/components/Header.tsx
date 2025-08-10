@@ -8,6 +8,7 @@ import { hardhat } from "viem/chains";
 import { Bars3Icon, BugAntIcon } from "@heroicons/react/24/outline";
 import { FaucetButton, RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
 import { useOutsideClick, useTargetNetwork } from "~~/hooks/scaffold-eth";
+import logo from "~~/public/logo.gif";
 
 type HeaderMenuLink = {
   label: string;
@@ -81,7 +82,8 @@ export const Header = () => {
             <HeaderMenuLinks />
           </ul>
         </details> */}
-        <div className="flex flex-col ml-2">
+        <div className="flex flex-row ml-2 items-center gap-2">
+          <Image src={logo} alt="Logo" width={24} height={24} />
           <span className="font-bold leading-tight">Intentor</span>
         </div>
         <ul className="hidden lg:flex lg:flex-nowrap menu menu-horizontal px-1 gap-2">{/* <HeaderMenuLinks /> */}</ul>
